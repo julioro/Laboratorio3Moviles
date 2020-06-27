@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pucp.telecom.moviles.lab3.Fragments.DialogFragmentGuardarLocal;
+import pucp.telecom.moviles.lab3.otro.Medicion;
 
 public class MainActivity extends AppCompatActivity {
     final String apiKey = "SE NOS OLVIDO LA LLAVE, PERDON MACE2";
@@ -67,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         try (FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
              FileWriter fileWriter = new FileWriter(fileOutputStream.getFD());) {
             Gson gson = new Gson();
-            String listaMediciones = gson.toJson(m);
-            fileWriter.write(m);
+            String mediciones = gson.toJson(m);
+            fileWriter.write(mediciones);
 
             Log.d("infoApp", "Guardado exitoso");
         } catch (IOException e) {
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("tiempo", m.getDuracion());
+                params.put("tiempo", String.valueOf(m.getDuracion()));
                 params.put("latitud", String.valueOf(latitud));
                 params.put("longitud", String.valueOf(longitud));
                 params.put("mediciones", Arrays.toString(m.getMedidas()));
