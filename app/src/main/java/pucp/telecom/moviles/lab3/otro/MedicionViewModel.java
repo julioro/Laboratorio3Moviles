@@ -66,4 +66,12 @@ public class MedicionViewModel extends ViewModel {
     public void setThread(Thread thread) {
         this.thread = thread;
     }
+
+    public MutableLiveData<Integer> getDuracion() {
+        return duracion;
+    }
+
+    public MutableLiveData<Double> getNoise() {
+        return noise;
+    }
 }
