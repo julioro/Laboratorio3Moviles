@@ -17,12 +17,12 @@ public class DialogFragmentGuardarLocal extends androidx.fragment.app.DialogFrag
         builder.setMessage("¿Guardar información en el sistema de archivos local?")
                 .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        // Llamar a guardarLocal y pasarle los valores almacenados del App Specific Storage.
                     }
                 })
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        // Llamar a guardarRemoto y pasarle los valores almacenados del App Specific Storage.
                     }
                 });
         return builder.create();
