@@ -1,27 +1,35 @@
 package pucp.telecom.moviles.lab3;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
+import android.content.Context;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import pucp.telecom.moviles.lab3.otro.MedicionViewModel;
+import pucp.telecom.moviles.lab3.Fragments.DialogFragmentGuardarLocal;
+import pucp.telecom.moviles.lab3.otro.Medicion;
 
 public class MainActivity extends AppCompatActivity {
+    final String apiKey = "SE NOS OLVIDO LA LLAVE, PERDON MACE2";
 
     private FusedLocationProviderClient fusedLocationClient;
     private Location lugar;
@@ -32,6 +40,89 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Button buttonAbrirAct2 = findViewById(R.id.buttonAbrirAct2);
+        Button btnGuardarLcoal = findViewById(R.id.btnGuardarLocal);
+        btnGuardarLcoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragmentGuardarLocal guardarLocalFr = new DialogFragmentGuardarLocal();
+                guardarLocalFr.show(getSupportFragmentManager(), "guardarLocal");
+
+                /*
+                DatePickerFragment datePickerFragment = new DatePickerFragment();
+                datePickerFragment.show(getSupportFragmentManager(), "fecha");
+
+                DialogFragmentGuardarLocal fr =new DialogFragmentGuardarLocal();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.
+                */
+            }
+        });
+
+
+    }
+
+    public void guardarLocal(Medicion m) {
+        // medición_20062020_0225.json
+
+        SimpleDateFormat parser = new SimpleDateFormat("ddMMyyy_HHmm");
+        String fileName = "medicion_" + parser.format(new Date()) + ".json";
+
+        try (FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+             FileWriter fileWriter = new FileWriter(fileOutputStream.getFD());) {
+            Gson gson = new Gson();
+            String mediciones = gson.toJson(m);
+            fileWriter.write(mediciones);
+
+            Log.d("infoApp", "Guardado exitoso");
+        } catch (IOException e) {
+            Log.d("infoApp", "Error al guardar");
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void guardarRemoto(final Medicion m, final double latitud, final double longitud) {
+        String URL = "http://ec2-34-234-229-191.compute-1.amazonaws.com:3000/";
+        StringRequest listarTrabajosRequest = new StringRequest(StringRequest.Method.POST, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("X-Api-Token", apiKey);
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("tiempo", String.valueOf(m.getDuracion()));
+                params.put("latitud", String.valueOf(latitud));
+                params.put("longitud", String.valueOf(longitud));
+                params.put("mediciones", Arrays.toString(m.getMedidas()));
+
+                return params;
+            }
+        };
+
+
+    }
+
+
 
         //GPS
         if (checkLocationPermission() == false){
