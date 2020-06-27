@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
     private Location lugar;
     private ArrayList<Double> mediciones = new ArrayList<Double>();
-    private double[] mRuido;
+    private Double[] mRuido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private void detenerGrabacion(){
         MedicionViewModel medicionViewModel = new ViewModelProvider(MainActivity.this).get(MedicionViewModel.class);
         medicionViewModel.getThread().interrupt();
+        mRuido = mediciones.toArray(new Double[mediciones.size()]);
 
     }
 
