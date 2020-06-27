@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Lab3</string>
+    <string name="analizador_de_ruido">Analizador de ruido</string>
+    <string name="nivel_de_ruido_actual">Nivel de ruido actual:</string>
+    <string name="guardar_remoto">GUARDAR REMOTO</string>
+    <string name="guardar_local">GUARDAR LOCAL</string>
+    <string name="detener_medici_n">DETENER MEDICIÓN</string>
+    <string name="iniciar_medici_n">INICIAR MEDICIÓN</string>
+    <string name="todo">TODO</string>
 </resources>
